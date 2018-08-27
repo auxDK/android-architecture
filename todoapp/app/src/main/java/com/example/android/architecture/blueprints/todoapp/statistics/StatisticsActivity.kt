@@ -60,8 +60,7 @@ class StatisticsActivity : AppCompatActivity() {
             replaceFragmentInActivity(it, R.id.contentFrame)
         }
 
-        StatisticsPresenter(
-                Injection.provideTasksRepository(applicationContext), statisticsFragment)
+        StatisticsPresenter(Injection.provideTasksRepository(applicationContext), statisticsFragment)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

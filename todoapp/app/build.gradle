@@ -4,7 +4,6 @@ apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "com.example.android.architecture.blueprints.todomvp"
@@ -60,6 +59,7 @@ android {
             events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
         }
     }
+    buildToolsVersion '27.0.3'
 }
 
 /*
