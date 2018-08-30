@@ -23,8 +23,7 @@ import com.example.android.architecture.blueprints.todoapp.data.source.TasksData
 import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository
 import com.example.android.architecture.blueprints.todoapp.util.EspressoIdlingResource
 import com.example.android.architecture.blueprints.todoapp.util.launchSilent
-import kotlinx.coroutines.experimental.android.UI
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlinx.coroutines.experimental.CoroutineScope
 
 /**
  * Listens to user actions from the UI ([TasksFragment]), retrieves the data and updates the
@@ -32,8 +31,8 @@ import kotlin.coroutines.experimental.CoroutineContext
  */
 class TasksPresenter(private val tasksRepository: TasksRepository,
                      private val tasksView: TasksContract.View,
-                     private val uiContext: CoroutineContext = UI)
-    : TasksContract.Presenter {
+                     private val uiScope: CoroutineScope)
+    : TasksContract.Presenter, CoroutineScope by uiScope {
 
     override var currentFiltering = TasksFilterType.ALL_TASKS
 
@@ -66,7 +65,7 @@ class TasksPresenter(private val tasksRepository: TasksRepository,
      * *
      * @param showLoadingUI Pass in true to display a loading icon in the UI
      */
-    private fun loadTasks(forceUpdate: Boolean, showLoadingUI: Boolean) = launchSilent(uiContext) {
+    private fun loadTasks(forceUpdate: Boolean, showLoadingUI: Boolean) = launchSilent {
         if (showLoadingUI) {
             tasksView.setLoadingIndicator(true)
         }
@@ -155,13 +154,13 @@ class TasksPresenter(private val tasksRepository: TasksRepository,
         tasksView.showTaskDetailsUi(requestedTask.id)
     }
 
-    override fun completeTask(completedTask: Task) = launchSilent(uiContext) {
+    override fun completeTask(completedTask: Task) = launchSilent {
         tasksRepository.completeTask(completedTask)
         tasksView.showTaskMarkedComplete()
         loadTasks(false, false)
     }
 
-    override fun activateTask(activeTask: Task) = launchSilent(uiContext) {
+    override fun activateTask(activeTask: Task) = launchSilent {
         tasksRepository.activateTask(activeTask)
         tasksView.showTaskMarkedActive()
         loadTasks(false, false)

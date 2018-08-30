@@ -15,13 +15,11 @@ import kotlin.coroutines.experimental.EmptyCoroutineContext
  * }
  * ```
  */
-fun launchSilent(
-        context: CoroutineContext = DefaultDispatcher,
+fun CoroutineScope.launchSilent(
+        context: CoroutineContext = EmptyCoroutineContext,
         start: CoroutineStart = CoroutineStart.DEFAULT,
-        parent: Job? = null,
-        block: suspend CoroutineScope.() -> Unit
-) {
-    launch(context, start, parent, block)
+        block: suspend CoroutineScope.() -> Unit) {
+    this.launch(context, start, null, block)
 }
 
 /**

@@ -19,13 +19,14 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.example.android.architecture.blueprints.todoapp.Injection
 import com.example.android.architecture.blueprints.todoapp.R
+import com.example.android.architecture.blueprints.todoapp.util.ScopedAppCompatActivity
 import com.example.android.architecture.blueprints.todoapp.util.replaceFragmentInActivity
 import com.example.android.architecture.blueprints.todoapp.util.setupActionBar
 
 /**
  * Displays task details screen.
  */
-class TaskDetailActivity : AppCompatActivity() {
+class TaskDetailActivity : ScopedAppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +49,7 @@ class TaskDetailActivity : AppCompatActivity() {
                 }
         // Create the presenter
         TaskDetailPresenter(taskId, Injection.provideTasksRepository(applicationContext),
-                taskDetailFragment)
+                taskDetailFragment, this)
     }
 
     override fun onSupportNavigateUp(): Boolean {

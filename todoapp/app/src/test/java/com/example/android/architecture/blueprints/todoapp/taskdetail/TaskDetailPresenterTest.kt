@@ -20,6 +20,7 @@ import com.example.android.architecture.blueprints.todoapp.data.source.Result
 import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository
 import com.example.android.architecture.blueprints.todoapp.eq
 import com.example.android.architecture.blueprints.todoapp.util.runBlockingSilent
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.Unconfined
 import org.junit.Before
 import org.junit.Test
@@ -62,7 +63,7 @@ class TaskDetailPresenterTest {
     fun createPresenter_setsThePresenterToView() {
         // Get a reference to the class under test
         taskDetailPresenter = TaskDetailPresenter(
-                ACTIVE_TASK.id, tasksRepository, taskDetailView, Unconfined)
+                ACTIVE_TASK.id, tasksRepository, taskDetailView, GlobalScope + Unconfined)
 
         // Then the presenter is set to the view
         verify(taskDetailView).presenter = taskDetailPresenter
@@ -75,7 +76,7 @@ class TaskDetailPresenterTest {
 
         // When tasks presenter is asked to open a task
         taskDetailPresenter = TaskDetailPresenter(
-                ACTIVE_TASK.id, tasksRepository, taskDetailView, Unconfined).apply { start() }
+                ACTIVE_TASK.id, tasksRepository, taskDetailView, GlobalScope + Unconfined).apply { start() }
 
         // Then task is loaded from model, callback is captured and progress indicator is shown
         verify(tasksRepository).getTask(eq(ACTIVE_TASK.id))
@@ -96,7 +97,7 @@ class TaskDetailPresenterTest {
         `when`(tasksRepository.getTask(COMPLETED_TASK.id)).thenReturn(Result.Success(COMPLETED_TASK))
 
         taskDetailPresenter = TaskDetailPresenter(
-                COMPLETED_TASK.id, tasksRepository, taskDetailView, Unconfined).apply { start() }
+                COMPLETED_TASK.id, tasksRepository, taskDetailView, GlobalScope + Unconfined).apply { start() }
 
         // Then task is loaded from model, callback is captured and progress indicator is shown
         verify(tasksRepository).getTask(eq(COMPLETED_TASK.id))
@@ -115,7 +116,7 @@ class TaskDetailPresenterTest {
     fun getUnknownTaskFromRepositoryAndLoadIntoView() {
         // When loading of a task is requested with an invalid task ID.
         taskDetailPresenter = TaskDetailPresenter(
-                INVALID_TASK_ID, tasksRepository, taskDetailView, Unconfined).apply { start() }
+                INVALID_TASK_ID, tasksRepository, taskDetailView, GlobalScope + Unconfined).apply { start() }
         verify(taskDetailView).showMissingTask()
     }
 
@@ -126,7 +127,7 @@ class TaskDetailPresenterTest {
 
         // When the deletion of a task is requested
         taskDetailPresenter = TaskDetailPresenter(
-                task.id, tasksRepository, taskDetailView, Unconfined).apply { deleteTask() }
+                task.id, tasksRepository, taskDetailView, GlobalScope + Unconfined).apply { deleteTask() }
 
         // Then the repository and the view are notified
         verify(tasksRepository).deleteTask(task.id)
@@ -138,7 +139,7 @@ class TaskDetailPresenterTest {
         // Given an initialized presenter with an active task
         val task = Task(TITLE_TEST, DESCRIPTION_TEST)
         taskDetailPresenter = TaskDetailPresenter(
-                task.id, tasksRepository, taskDetailView, Unconfined).apply {
+                task.id, tasksRepository, taskDetailView, GlobalScope + Unconfined).apply {
             start()
             completeTask()
         }
@@ -153,7 +154,7 @@ class TaskDetailPresenterTest {
         // Given an initialized presenter with a completed task
         val task = Task(TITLE_TEST, DESCRIPTION_TEST).apply { isCompleted = true }
         taskDetailPresenter = TaskDetailPresenter(
-                task.id, tasksRepository, taskDetailView, Unconfined).apply {
+                task.id, tasksRepository, taskDetailView, GlobalScope + Unconfined).apply {
             start()
             activateTask()
         }
@@ -167,7 +168,7 @@ class TaskDetailPresenterTest {
     fun activeTaskIsShownWhenEditing() {
         // When the edit of an ACTIVE_TASK is requested
         taskDetailPresenter = TaskDetailPresenter(
-                ACTIVE_TASK.id, tasksRepository, taskDetailView, Unconfined).apply { editTask() }
+                ACTIVE_TASK.id, tasksRepository, taskDetailView, GlobalScope + Unconfined).apply { editTask() }
 
         // Then the view is notified
         verify(taskDetailView).showEditTask(ACTIVE_TASK.id)
@@ -177,7 +178,7 @@ class TaskDetailPresenterTest {
     fun invalidTaskIsNotShownWhenEditing() {
         // When the edit of an invalid task id is requested
         taskDetailPresenter = TaskDetailPresenter(
-                INVALID_TASK_ID, tasksRepository, taskDetailView, Unconfined).apply { editTask() }
+                INVALID_TASK_ID, tasksRepository, taskDetailView, GlobalScope + Unconfined).apply { editTask() }
 
         // Then the edit mode is never started
         verify(taskDetailView, never()).showEditTask(INVALID_TASK_ID)

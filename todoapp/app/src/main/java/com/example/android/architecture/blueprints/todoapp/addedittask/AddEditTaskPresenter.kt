@@ -20,8 +20,7 @@ import com.example.android.architecture.blueprints.todoapp.data.Task
 import com.example.android.architecture.blueprints.todoapp.data.source.Result
 import com.example.android.architecture.blueprints.todoapp.data.source.TasksDataSource
 import com.example.android.architecture.blueprints.todoapp.util.launchSilent
-import kotlinx.coroutines.experimental.android.UI
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlinx.coroutines.experimental.CoroutineScope
 
 /**
  * Listens to user actions from the UI ([AddEditTaskFragment]), retrieves the data and updates
@@ -39,8 +38,8 @@ class AddEditTaskPresenter(
         private val tasksRepository: TasksDataSource,
         private val addTaskView: AddEditTaskContract.View,
         override var isDataMissing: Boolean,
-        private val uiContext: CoroutineContext = UI
-) : AddEditTaskContract.Presenter {
+        uiScope: CoroutineScope
+) : AddEditTaskContract.Presenter, CoroutineScope by uiScope {
 
     init {
         addTaskView.presenter = this
@@ -60,7 +59,7 @@ class AddEditTaskPresenter(
         }
     }
 
-    override fun populateTask() = launchSilent(uiContext) {
+    override fun populateTask() = launchSilent {
         if (taskId == null) {
             throw RuntimeException("populateTask() was called but task is new.")
         }
@@ -85,7 +84,7 @@ class AddEditTaskPresenter(
         }
     }
 
-    private fun createTask(title: String, description: String) = launchSilent(uiContext) {
+    private fun createTask(title: String, description: String) = launchSilent {
         val newTask = Task(title, description)
         if (newTask.isEmpty) {
             addTaskView.showEmptyTaskError()
@@ -95,7 +94,7 @@ class AddEditTaskPresenter(
         }
     }
 
-    private fun updateTask(title: String, description: String) = launchSilent(uiContext) {
+    private fun updateTask(title: String, description: String) = launchSilent {
         if (taskId == null) {
             throw RuntimeException("updateTask() was called but task is new.")
         }

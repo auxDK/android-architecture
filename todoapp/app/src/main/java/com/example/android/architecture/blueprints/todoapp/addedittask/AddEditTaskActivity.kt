@@ -17,16 +17,16 @@
 package com.example.android.architecture.blueprints.todoapp.addedittask
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import com.example.android.architecture.blueprints.todoapp.Injection
 import com.example.android.architecture.blueprints.todoapp.R
+import com.example.android.architecture.blueprints.todoapp.util.ScopedAppCompatActivity
 import com.example.android.architecture.blueprints.todoapp.util.replaceFragmentInActivity
 import com.example.android.architecture.blueprints.todoapp.util.setupActionBar
 
 /**
  * Displays an add or edit task screen.
  */
-class AddEditTaskActivity : AppCompatActivity() {
+class AddEditTaskActivity : ScopedAppCompatActivity() {
 
     private lateinit var addEditTaskPresenter: AddEditTaskPresenter
 
@@ -57,7 +57,7 @@ class AddEditTaskActivity : AppCompatActivity() {
         // Create the presenter
         addEditTaskPresenter = AddEditTaskPresenter(taskId,
                 Injection.provideTasksRepository(applicationContext), addEditTaskFragment,
-                shouldLoadDataFromRepo)
+                shouldLoadDataFromRepo, this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

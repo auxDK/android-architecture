@@ -24,6 +24,8 @@ import com.example.android.architecture.blueprints.todoapp.anyMockito
 import com.example.android.architecture.blueprints.todoapp.data.source.DataSourceException
 import com.example.android.architecture.blueprints.todoapp.data.source.Result
 import com.example.android.architecture.blueprints.todoapp.util.runBlockingSilent
+import kotlinx.coroutines.experimental.CoroutineScope
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.Unconfined
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -32,14 +34,17 @@ import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 
+
 /**
  * Unit tests for the implementation of [TasksPresenter]
  */
 class TasksPresenterTest {
 
-    @Mock private lateinit var tasksRepository: TasksRepository
+    @Mock
+    private lateinit var tasksRepository: TasksRepository
 
-    @Mock private lateinit var tasksView: TasksContract.View
+    @Mock
+    private lateinit var tasksView: TasksContract.View
 
     private lateinit var tasksPresenter: TasksPresenter
 
@@ -52,7 +57,7 @@ class TasksPresenterTest {
         MockitoAnnotations.initMocks(this)
 
         // Get a reference to the class under test
-        tasksPresenter = TasksPresenter(tasksRepository, tasksView, uiContext = Unconfined)
+        tasksPresenter = TasksPresenter(tasksRepository, tasksView, GlobalScope + Unconfined)
 
         // The presenter won't update the view unless it's active.
         `when`(tasksView.isActive).thenReturn(true)
@@ -66,7 +71,7 @@ class TasksPresenterTest {
     @Test
     fun createPresenter_setsThePresenterToView() {
         // Get a reference to the class under test
-        tasksPresenter = TasksPresenter(tasksRepository, tasksView, uiContext = Unconfined)
+        tasksPresenter = TasksPresenter(tasksRepository, tasksView, CoroutineScope(Unconfined))
 
         // Then the presenter is set to the view
         verify(tasksView).presenter = tasksPresenter

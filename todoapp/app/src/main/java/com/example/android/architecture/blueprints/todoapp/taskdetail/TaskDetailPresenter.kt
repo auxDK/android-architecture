@@ -19,8 +19,7 @@ import com.example.android.architecture.blueprints.todoapp.data.Task
 import com.example.android.architecture.blueprints.todoapp.data.source.Result
 import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository
 import com.example.android.architecture.blueprints.todoapp.util.launchSilent
-import kotlinx.coroutines.experimental.android.UI
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlinx.coroutines.experimental.CoroutineScope
 
 /**
  * Listens to user actions from the UI ([TaskDetailFragment]), retrieves the data and updates
@@ -30,8 +29,8 @@ class TaskDetailPresenter(
         private val taskId: String,
         private val tasksRepository: TasksRepository,
         private val taskDetailView: TaskDetailContract.View,
-        private val uiContext: CoroutineContext = UI
-) : TaskDetailContract.Presenter {
+        uiScope: CoroutineScope
+) : TaskDetailContract.Presenter, CoroutineScope by uiScope {
 
     init {
         taskDetailView.presenter = this
@@ -41,7 +40,7 @@ class TaskDetailPresenter(
         openTask()
     }
 
-    private fun openTask() = launchSilent(uiContext) {
+    private fun openTask() = launchSilent {
         if (taskId.isEmpty()) {
             taskDetailView.showMissingTask()
         } else {
@@ -66,7 +65,7 @@ class TaskDetailPresenter(
         taskDetailView.showEditTask(taskId)
     }
 
-    override fun deleteTask() = launchSilent(uiContext) {
+    override fun deleteTask() = launchSilent {
         if (taskId.isEmpty()) {
             taskDetailView.showMissingTask()
         } else {
@@ -75,7 +74,7 @@ class TaskDetailPresenter(
         }
     }
 
-    override fun completeTask() = launchSilent(uiContext) {
+    override fun completeTask() = launchSilent {
         if (taskId.isEmpty()) {
             taskDetailView.showMissingTask()
         } else {
@@ -84,7 +83,7 @@ class TaskDetailPresenter(
         }
     }
 
-    override fun activateTask() = launchSilent(uiContext) {
+    override fun activateTask() = launchSilent {
         if (taskId.isEmpty()) {
             taskDetailView.showMissingTask()
         } else {

@@ -22,6 +22,7 @@ import com.example.android.architecture.blueprints.todoapp.eq
 import com.example.android.architecture.blueprints.todoapp.anyMockito
 import com.example.android.architecture.blueprints.todoapp.data.source.Result
 import com.example.android.architecture.blueprints.todoapp.util.runBlockingSilent
+import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Unconfined
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.assertThat
@@ -57,7 +58,7 @@ class AddEditTaskPresenterTest {
     fun createPresenter_setsThePresenterToView() {
         // Get a reference to the class under test
         addEditTaskPresenter = AddEditTaskPresenter(
-                null, tasksRepository, addEditTaskView, true, Unconfined)
+                null, tasksRepository, addEditTaskView, true, CoroutineScope(Unconfined))
 
         // Then the presenter is set to the view
         verify(addEditTaskView).presenter = addEditTaskPresenter
@@ -66,7 +67,7 @@ class AddEditTaskPresenterTest {
     @Test
     fun saveNewTaskToRepository_showsSuccessMessageUi() = runBlockingSilent {
         // Get a reference to the class under test
-        addEditTaskPresenter = AddEditTaskPresenter(null, tasksRepository, addEditTaskView, true, Unconfined)
+        addEditTaskPresenter = AddEditTaskPresenter(null, tasksRepository, addEditTaskView, true, CoroutineScope(Unconfined))
 
         // When the presenter is asked to save a task
         addEditTaskPresenter.saveTask("New Task Title", "Some Task Description")
@@ -79,7 +80,7 @@ class AddEditTaskPresenterTest {
     @Test
     fun saveTask_emptyTaskShowsErrorUi() {
         // Get a reference to the class under test
-        addEditTaskPresenter = AddEditTaskPresenter(null, tasksRepository, addEditTaskView, true, Unconfined)
+        addEditTaskPresenter = AddEditTaskPresenter(null, tasksRepository, addEditTaskView, true, CoroutineScope(Unconfined))
 
         // When the presenter is asked to save an empty task
         addEditTaskPresenter.saveTask("", "")
@@ -92,7 +93,7 @@ class AddEditTaskPresenterTest {
     fun saveExistingTaskToRepository_showsSuccessMessageUi() = runBlockingSilent {
         // Get a reference to the class under test
         addEditTaskPresenter = AddEditTaskPresenter(
-                "1", tasksRepository, addEditTaskView, true, Unconfined)
+                "1", tasksRepository, addEditTaskView, true, CoroutineScope(Unconfined))
 
         // When the presenter is asked to save an existing task
         addEditTaskPresenter.saveTask("Existing Task Title", "Some Task Description")
@@ -108,7 +109,7 @@ class AddEditTaskPresenterTest {
         `when`(tasksRepository.getTask(testTask.id)).thenReturn(Result.Success(testTask))
         // Get a reference to the class under test
         addEditTaskPresenter = AddEditTaskPresenter(testTask.id,
-                tasksRepository, addEditTaskView, true, Unconfined).apply {
+                tasksRepository, addEditTaskView, true, CoroutineScope(Unconfined)).apply {
             // When the presenter is asked to populate an existing task
             populateTask()
         }
